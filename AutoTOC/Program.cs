@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,7 +23,11 @@ namespace AutoTOC
                 List<string> folders = (new DirectoryInfo(dlcDir)).GetDirectories().Select(d => d.FullName).ToList();
                 folders.Add(baseDir);
 
-                Task.WhenAll(folders.Select(loc => TOCAsync(loc))).Wait();
+                for(int i=0; i<folders.Count; i++)
+                {
+                    prepareToCreateTOC(folders[i]);
+                }
+                //Task.WhenAll(folders.Select(loc => TOCAsync(loc))).Wait();
 
                 Console.WriteLine("Done!");
             }
@@ -34,10 +38,12 @@ namespace AutoTOC
             }
         }
 
+        /*
         static Task TOCAsync(string tocLoc)
         {
             return Task.Run(() => prepareToCreateTOC(tocLoc));
         }
+        */
 
         static void prepareToCreateTOC(string consoletocFile)
         {
@@ -146,6 +152,12 @@ namespace AutoTOC
         {
             List<string> res = new List<string>();
             foreach (string s in Pattern)
+                res.AddRange(Directory.GetFiles(path, s));
+            return res.ToArray();
+        }
+    }
+}
+
                 res.AddRange(Directory.GetFiles(path, s));
             return res.ToArray();
         }
